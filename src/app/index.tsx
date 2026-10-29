@@ -1,98 +1,120 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import React from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AntennaIllustration } from "@/components/antenna-illustration";
+import { Logo } from "@/components/logo";
+import { PrimaryButton } from "@/components/ui/buttons";
+import { colors, radius, space } from "@/constants/theme";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function SplashScreen() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <LinearGradient
+      colors={[colors.bgElevated, colors.bg, colors.bgDeep]}
+      style={styles.flex}
+    >
+      <SafeAreaView style={styles.flex}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.brandRow}>
+            <Logo size={34} />
+            <Text style={styles.brandSmall}>
+              Antenna<Text style={styles.accent}>Finder</Text>
+            </Text>
+          </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+          <View style={styles.hero}>
+            <View style={styles.logoWrap}>
+              <Logo size={74} />
+            </View>
+            <Text style={styles.title}>
+              Antenna<Text style={styles.accent}>Finder</Text>
+            </Text>
+            <Text style={styles.tagline}>Arah yang tepat, sinyal lebih kuat.</Text>
+            <Text style={styles.description}>
+              Temukan arah antena TV outdoor, atasi channel digital yang hilang, dan
+              pahami penyebab sinyal lemah di rumahmu.
+            </Text>
+          </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+          <AntennaIllustration width={300} />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+          <View style={styles.actions}>
+            <PrimaryButton
+              label="Mulai"
+              icon="arrow-forward"
+              onPress={() => router.replace("/beranda")}
+            />
+            <Pressable
+              onPress={() => router.push("/panduan")}
+              accessibilityRole="button"
+              accessibilityLabel="Lihat tutorial"
+              style={({ pressed }) => [styles.link, pressed && styles.linkPressed]}
+            >
+              <Ionicons name="play-circle-outline" size={18} color={colors.blue} />
+              <Text style={styles.linkText}>Lihat Tutorial</Text>
+            </Pressable>
+            <Text style={styles.footnote}>
+              Tanpa akun · Pengaturan & riwayat disimpan di perangkat
+            </Text>
+          </View>
+        </ScrollView>
       </SafeAreaView>
-    </ThemedView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+  flex: { flex: 1 },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: space.xxl,
+    paddingBottom: space.xxl,
+    gap: space.lg,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  brandRow: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingTop: space.sm },
+  brandSmall: { color: colors.text, fontSize: 15, fontWeight: "700", letterSpacing: -0.2 },
+  accent: { color: colors.primary },
+  hero: { alignItems: "center", gap: space.sm, marginTop: space.lg },
+  logoWrap: {
+    width: 96,
+    height: 96,
+    borderRadius: radius.pill,
+    backgroundColor: "rgba(22, 229, 138, 0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(22, 229, 138, 0.22)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
-    textAlign: 'center',
+    color: colors.text,
+    fontSize: 34,
+    fontWeight: "700",
+    letterSpacing: -1,
+    marginTop: space.sm,
   },
-  code: {
-    textTransform: 'uppercase',
+  tagline: { color: colors.primary, fontSize: 15, fontWeight: "600" },
+  description: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: "center",
+    maxWidth: 320,
+    marginTop: 4,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  actions: { gap: space.md, marginTop: "auto" },
+  link: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: space.sm,
   },
+  linkPressed: { opacity: 0.7 },
+  linkText: { color: colors.blue, fontSize: 14, fontWeight: "600" },
+  footnote: { color: colors.dim, fontSize: 11, textAlign: "center" },
 });
